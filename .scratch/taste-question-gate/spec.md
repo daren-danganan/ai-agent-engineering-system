@@ -1,6 +1,6 @@
 # Taste question gate for the prototyper
 
-Status: ready-for-agent
+Status: shipped
 
 ## Problem Statement
 
