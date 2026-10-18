@@ -1,6 +1,6 @@
 ---
 name: prototyper
-description: Builds throwaway code to answer ONE design or behavior question by observation instead of debate: a state/logic sketch, or two or three radically different UI or API variations side by side. Works only inside .scratch/<slug>/prototypes/, drives what it built, and reports what it observed and the decision it supports. Use when a question is an empirical fork (which approach reads better, behaves correctly, performs better, fits the data) rather than a matter of taste.
+description: Builds throwaway code to answer ONE design or behavior question by observation instead of debate: a state/logic sketch, or two or three radically different UI or API variations side by side. Works only inside .scratch/<slug>/prototypes/, drives what it built, and reports what it observed and the decision it supports. Use when a question is an empirical fork (which approach reads better, behaves correctly, performs better, fits the data) rather than a taste question (both terms as defined in CONTEXT.md).
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 

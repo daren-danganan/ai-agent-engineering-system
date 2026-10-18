@@ -1,6 +1,6 @@
 # Prototype to decide
 
-`/prototype <question>` hands one empirical question to the `prototyper`, which builds two or three structurally different throwaway variants under `.scratch/<slug>/prototypes/<question-slug>/`, runs them on the same inputs, and reports what it observed and the decision the evidence supports. The main conversation records the decision, then asks before deleting the prototype folder. A matter of taste is refused as `NOT A PROTOTYPE QUESTION`.
+`/prototype <question>` hands one empirical question to the `prototyper`, which builds two or three structurally different throwaway variants under `.scratch/<slug>/prototypes/<question-slug>/`, runs them on the same inputs, and reports what it observed and the decision the evidence supports. The main conversation records the decision, then asks before deleting the prototype folder. A taste question (`CONTEXT.md`) is refused as `NOT A PROTOTYPE QUESTION`.
 
 Run 2026-10-18, after `/prototype` was changed to pass the question word for word and to stop on `NOT A PROTOTYPE QUESTION`. The seven sub-features above `proto-layout` pass; `proto-delete-ask` was checked only up to the question (the deletion on yes was not driven again).
 
