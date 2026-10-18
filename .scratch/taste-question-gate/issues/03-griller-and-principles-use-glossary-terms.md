@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **Verify with:** a static grep over the griller agent file and the principles doc (both terms present, a pointer to `CONTEXT.md`, no competing definition of taste left), plus the existing grill journey in the feature map still passing on a fresh drive.
 
@@ -12,3 +12,9 @@
 - [ ] The principles' two sorting lines use the same terms and reference the glossary
 - [ ] No file other than `CONTEXT.md` defines what a taste question is
 - [ ] The grill journey passes on a fresh drive
+
+## Comments
+
+- Commit: 70c3d0d.
+- Verifier: PASS. Static grep: only CONTEXT.md defines taste. Grill journey passed every step on a fresh sandbox (run 20261018-102421-6713). proto-taste and proto-layout re-driven after the description change, no regression. Observation: a /grill with a mixed idea sorted the name question to the human and the layout question to /prototype.
+- Implementer assumptions: reworded the feature-map summary at features/prototype.md:3; left historical run records alone; removed the bracketed examples from the griller's empirical-fork bullet in favor of quoting the glossary test; added a griller bullet for mixed questions; the prototyper description keeps its routing examples and points to CONTEXT.md.
