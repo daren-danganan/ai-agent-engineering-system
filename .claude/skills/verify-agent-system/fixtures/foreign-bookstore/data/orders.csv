@@ -1,0 +1,4 @@
+order_id,isbn,customer,placed,status
+1001,9780307387899,R. Alvarez,2026-10-02,special order
+1002,9780553380163,M. Chen,2026-10-05,on hold shelf
+1003,9780141439518,P. Okafor,2026-10-11,on hold shelf
