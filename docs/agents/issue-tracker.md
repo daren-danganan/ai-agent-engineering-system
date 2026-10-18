@@ -9,6 +9,7 @@ Issues and specs for this repo live as markdown files in `.scratch/`.
 - Implementation issues are one file per ticket at `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`, never a single combined tickets file
 - Triage state is recorded as a `Status:` line near the top of each issue file (see `triage-labels.md` for the role strings)
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
+- A `Blocked by: NN, NN` line near the top lists the tickets this one waits on. A blocker clears once it is `done` or `resolved`; any other status, `wontfix` included, keeps its dependents blocked, because the work they need will never land. `/status` shows them as `blocked by NN`
 - A ticket is closed by setting `Status: done` and appending a `## Comments` entry with the commit hash and the verifier's verdict (`/implement` does this)
 - A feature's state is the `Status:` line of its `spec.md`: `ready-for-agent` → `building` → `shipped` (see `triage-labels.md`). `/implement` advances it
 - `/status` (`.claude/scripts/status.sh`) prints every feature's state with its done, ready, blocked and other ticket counts
@@ -27,7 +28,7 @@ Used by `/wayfinder`. The **map** is a file with one **child** file per ticket.
 
 - **Map**: `.scratch/<effort>/map.md` (the Notes / Decisions-so-far / Fog body).
 - **Child ticket**: `.scratch/<effort>/issues/NN-<slug>.md`, numbered from `01`, with the question in the body. A `Type:` line records the ticket type (`research`/`prototype`/`grilling`/`task`); a `Status:` line records `claimed`/`resolved`.
-- **Blocking**: a `Blocked by: NN, NN` line near the top. A ticket is unblocked when every file it lists is `resolved`.
+- **Blocking**: a `Blocked by: NN, NN` line near the top. A ticket is unblocked when every file it lists is `resolved` (or `done`); a `wontfix` blocker keeps it blocked, same as the Conventions above.
 - **Frontier**: scan `.scratch/<effort>/issues/` for files that are open, unblocked, and unclaimed; first by number wins.
 - **Claim**: set `Status: claimed` and save before any work.
 - **Resolve**: append the answer under an `## Answer` heading, set `Status: resolved`, then append a context pointer (gist + link) to the map's Decisions-so-far in `map.md`.

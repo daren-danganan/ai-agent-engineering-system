@@ -16,7 +16,7 @@ Edit the right-hand column to match whatever vocabulary you actually use.
 
 ## Feature status
 
-A ticket closes with `done`. A feature's `spec.md` carries the same `Status:` line and moves through these states:
+A ticket closes with `done` (a wayfinding child ticket closes with `resolved`; both clear a `Blocked by:`, `wontfix` does not). A feature's `spec.md` carries the same `Status:` line and moves through these states:
 
 | Status | Set by | Meaning |
 |---|---|---|
