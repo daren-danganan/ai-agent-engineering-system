@@ -1,22 +1,22 @@
-# Engineering System for AI Agents
+## How work flows here
 
-## Project memory lives in `docs/`
-- **Before starting work:** read `docs/STATUS.md`, `docs/PLAN.md`, `docs/FEATURES.md`, and `docs/GUIDELINES.md`. Follow any matching procedure in `docs/procedures/`. Reuse existing features before building new ones.
-- **After finishing any task or discussion:** invoke the `doc-keeper` subagent with a short brief — what was discussed, decided, and changed, plus any open questions. Do not skip this step.
-- Do not edit `docs/` directly from other agents; route updates through `doc-keeper` so formats stay consistent.
+Agents live in `.claude/agents/`, commands in `.claude/commands/`. Which to use when: `docs/agents/flows.md`. The judgment they share: `docs/agents/principles.md`.
 
-## Feature requests go to the planner first
-If the user's message asks to **build, add, create, change, replace, or remove a feature** (or describes something new they want the system to do), do not start building. The planner takes over:
+- **Building, adding, changing or removing a feature** → say "This is a new feature, so I'll grill it first (say 'skip planning' to go straight to building)", then run the `/grill` procedure in this conversation. Skip it for a typo, a one-file fix, a question, or when a `.scratch/<slug>/` spec already covers the request.
+- **Something broken, failing or slow** → `/diagnose`.
+- **"How does X work" / "why is Y like this"** → spawn `scout`. Look facts up; never ask the user what the code can tell you.
+- **Done means proven on the real artifact**, not "it compiles". Use the feature map in `.claude/skills/verify-agent-system/features/`.
 
-1. Say in one line: "This looks like a new feature — I'll plan it with the planner first (say 'skip planning' to go straight to building)."
-2. Read `.claude/agents/planner.md` and act as the planner **in this conversation** (interactive mode, same as `/plan-feature`). Do not delegate it as a subagent — a subagent can't interview the user.
-3. Build only after the spec in `docs/specs/` is `Approved`, following its build order.
+## Agent skills
 
-Skip the planner when:
-- an `Approved` spec in `docs/specs/` already covers the request — build from it;
-- it's a bug fix, typo, or small change confined to one file;
-- the user says "skip planning" (note the skip in the doc-keeper brief);
-- it's a question, explanation, or review — nothing is being built.
+### Issue tracker
 
-If unsure whether a request counts as a feature, ask once: "Plan this first, or just do it?"
+Issues and specs live as local markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
 
+### Triage labels
+
+The five default triage roles, unchanged: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
