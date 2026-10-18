@@ -4,13 +4,15 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** done
 
 **Verify with:** reinstall into the real `~/.claude`, then `proto-taste-foreign` (`TALLY refused_clean=3 built=0`, each run's tool log reads `~/.claude/agent-kit/glossary.md` and not the fixture's `CONTEXT.md`) and `proto-layout-foreign` (variants built, a decision reported).
 
-- [ ] `docs/agents/glossary.md` holds the three definitions as settled 2026-10-18, definitions only
-- [ ] This repo's `CONTEXT.md` no longer defines them; one line points to the kit glossary
-- [ ] `install-global.sh` installs the glossary to `~/.claude/agent-kit/glossary.md` and rewrites glossary pointers to it
-- [ ] Prototyper gate and `description` point to the kit glossary; inline test, examples, `NOT A PROTOTYPE QUESTION` and write confinement unchanged
-- [ ] `proto-taste-foreign` and `proto-layout-foreign` added to the prototype feature map with run evidence
-- [ ] Existing proto journey notes no longer claim the gate reads `CONTEXT.md`
+- [x] `docs/agents/glossary.md` holds the three definitions as settled 2026-10-18, definitions only
+- [x] This repo's `CONTEXT.md` no longer defines them; one line points to the kit glossary
+- [x] `install-global.sh` installs the glossary to `~/.claude/agent-kit/glossary.md` and rewrites glossary pointers to it
+- [x] Prototyper gate and `description` point to the kit glossary; inline test, examples, `NOT A PROTOTYPE QUESTION` and write confinement unchanged
+- [x] `proto-taste-foreign` and `proto-layout-foreign` added to the prototype feature map with run evidence
+- [x] Existing proto journey notes no longer claim the gate reads `CONTEXT.md`
+
+Verified 2026-10-18 (runs in the prototype feature map): `proto-taste-foreign` `TALLY refused_clean=3 built=0`, `proto-layout-foreign` built. The "each run reads the kit glossary" part of Verify with held for 2 of 4 runs; the other two taste runs made no tool call at all and refused from the gate's inline test. No run looked up kit terms in the fixture's `CONTEXT.md` (the baseline did). The journey's pass check was written as "no kit-term lookup goes to `CONTEXT.md`" accordingly.

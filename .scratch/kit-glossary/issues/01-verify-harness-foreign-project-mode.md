@@ -4,13 +4,13 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 **Verify with:** `launch` with the fixture, `doctor` passes, then one drive of `/prototype` with the existing taste question: the stream shows the globally installed prototyper loaded from user scope inside the fixture sandbox.
 
-- [ ] A fixture project ships with the verify skill, with a bookstore-domain `CONTEXT.md` and no kit terms
-- [ ] `launch` has an option that copies the fixture instead of this repo, still `git init` + baseline commit
-- [ ] A drive option adds user scope (`--setting-sources user,project,local`); the default drive is unchanged
-- [ ] `doctor` skips its repo diffs in fixture mode and still checks auth
-- [ ] `cleanup` still removes the sandbox's projects entry
-- [ ] Skill docs and feature-map README describe the mode
+- [x] A fixture project ships with the verify skill, with a bookstore-domain `CONTEXT.md` and no kit terms
+- [x] `launch` has an option that copies the fixture instead of this repo, still `git init` + baseline commit
+- [x] A drive option adds user scope (`--setting-sources user,project,local`); the default drive is unchanged
+- [x] `doctor` skips its repo diffs in fixture mode and still checks auth
+- [x] `cleanup` still removes the sandbox's projects entry
+- [x] Skill docs and feature-map README describe the mode

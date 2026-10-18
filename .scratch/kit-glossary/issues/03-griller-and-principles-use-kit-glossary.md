@@ -4,12 +4,12 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** done
 
 **Verify with:** run `install-global.sh` with `CLAUDE_HOME` set to a temp dir and grep the installed tree: no kit-term pointer to `CONTEXT.md` in the installed prototyper, griller or principles; `~/.claude/agent-kit/glossary.md` pointers present; `NOT A PROTOTYPE QUESTION` and the write-confinement rule unchanged. Plus the spec's source grep.
 
-- [ ] Griller step 3 sorts by the kit glossary
-- [ ] Griller step 4 still writes project terms to the project glossary, plus the one-line kit-glossary rule
-- [ ] Principles' two "how the two fit together" lines point to the kit glossary
-- [ ] "Shared language" stays project-level and gains the kit-glossary rule
-- [ ] Real `~/.claude` reinstalled from this branch
+- [x] Griller step 3 sorts by the kit glossary
+- [x] Griller step 4 still writes project terms to the project glossary, plus the one-line kit-glossary rule
+- [x] Principles' two "how the two fit together" lines point to the kit glossary
+- [x] "Shared language" stays project-level and gains the kit-glossary rule
+- [x] Real `~/.claude` reinstalled from this branch

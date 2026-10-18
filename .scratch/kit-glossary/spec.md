@@ -1,6 +1,6 @@
 # Kit glossary that travels with the global install
 
-Status: ready-for-agent
+Status: done
 
 ## Problem Statement
 The taste-question-gate work (2026-10-18) defined **taste question**, **empirical fork** and **mixed question** in this repo's `CONTEXT.md`, and made the prototyper, the griller and the principles point there. Those terms belong to the agent kit, not to this repo. `install-global.sh` copies the agents into `~/.claude` for every project, and in any other project `CONTEXT.md` is that project's own glossary, or missing. So outside this repo the griller's question sorting and the principles' "decisions vs. empirical forks" rule point at the wrong file, and the prototyper's gate survives only because it quotes the test inline. The user has already run the installer, so their `~/.claude` carries these broken pointers today.
