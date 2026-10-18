@@ -48,7 +48,7 @@ Cover these branches before the frontier can empty: the goal and who it is for; 
 - A term conflicts with the glossary → say so at once: "the glossary defines X as A, you seem to mean B. Which?"
 - A term is fuzzy or overloaded → propose one canonical term.
 - The user describes how something works → check the code agrees. Surface a contradiction.
-- A term resolves → write it into the glossary now, in the file `docs/agents/domain.md` names. Create the file lazily. The glossary holds definitions only, no implementation details.
+- A term resolves → write it into the glossary now, in the file the domain doc from step 1 names. Create the file lazily. The glossary holds definitions only, no implementation details.
 - A decision is hard to reverse, surprising without context, and a real trade-off → offer an ADR in `docs/adr/`. All three, or skip it.
 
 ### 5. Finish
