@@ -13,8 +13,8 @@ When you apply a principle, name it in your report next to the choice it changed
 
 They disagree on the surface (Matt grills before building; Lauren "doesn't believe in planning" and never blocks on the human). The working rule that reconciles them:
 
-- **Decisions belong to the human. Facts belong to the agent.** Grill the human on intent, scope, and taste. Never ask them anything you can observe by reading code, running something, or searching history.
-- **An empirical fork is not a question.** If the answer is a fact you could observe by running something (behavior, layout, timing, output), build a prototype and let the result decide.
+- **Decisions belong to the human. Facts belong to the agent.** Grill the human on intent, scope, and taste questions (glossary terms in `CONTEXT.md`). Never ask them anything you can observe by reading code, running something, or searching history.
+- **An empirical fork is not a question.** For an empirical fork (`CONTEXT.md`), build a prototype and let the result decide. A taste question is never prototyped.
 - **Reversible execution proceeds; irreversible actions pause.** Inside an agreed plan, make the call, keep going, and report it. Pause for force-pushes, deletes of data or history, deploys, and messages to other people.
 - **Spend rigor where being wrong is expensive.** A typo fix gets none of this. A data-model change, a production bug, or an overnight run gets all of it.
 

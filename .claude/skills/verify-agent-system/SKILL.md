@@ -28,6 +28,7 @@ This copies the current working tree (tracked and untracked files, including unc
 - Later commands act on the most recent launch. To target another run, prefix the command with `VERIFY_RUN=<run-id>`.
 - Never drive the real repo. The agents write files, create branches and commit; that belongs in the sandbox.
 - The sandbox is a snapshot. After editing an agent or command in the repo, clean up and launch again.
+- `VERIFY_EXCLUDE="<folder> ..."` keeps those folders out of the sandbox and records them as `excluded=` in `meta`. Use it when a file in the repo would hand a drive its expected answer, such as a spec that names the verdict a journey checks.
 
 ## Doctor
 
@@ -68,7 +69,7 @@ Every drive writes these files to `~/.cache/verify-agent-system/<run-id>/evidenc
 | `<label>.state.txt` | Sandbox git state after the turn: branch, branches, `status --porcelain`, log, files changed since baseline. |
 | `<label>.exit.txt`, `<label>.stderr.txt` | Exit code and stderr of the `claude` process. |
 | `<label>.stream.jsonl` | The full event stream, including subagent output, cost and turn count. |
-| `meta.txt` | Repo path, repo HEAD, number of uncommitted files copied in, and the `claude` version. |
+| `meta.txt` | Repo path, repo HEAD, the folders kept out with `VERIFY_EXCLUDE` (`excluded=`, trailing slashes stripped), number of uncommitted files copied in, and the `claude` version. |
 
 Proof standards:
 
