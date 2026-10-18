@@ -1,6 +1,6 @@
 # Prototype to decide
 
-`/prototype <question>` hands one empirical question to the `prototyper`, which builds two or three structurally different throwaway variants under `.scratch/<slug>/prototypes/<question-slug>/`, runs them on the same inputs, and reports what it observed and the decision the evidence supports. The main conversation records the decision, then asks before deleting the prototype folder. A taste question (`CONTEXT.md`) is refused as `NOT A PROTOTYPE QUESTION`; so is a mixed question, whose refusal names the measurable part.
+`/prototype <question>` hands one empirical question to the `prototyper`, which builds two or three structurally different throwaway variants under `.scratch/<slug>/prototypes/<question-slug>/`, runs them on the same inputs, and reports what it observed and the decision the evidence supports. The main conversation records the decision, then asks before deleting the prototype folder. A taste question (agent kit glossary, `docs/agents/glossary.md`) is refused as `NOT A PROTOTYPE QUESTION`; so is a mixed question, whose refusal names the measurable part.
 
 Run 2026-10-18, after `/prototype` was changed to pass the question word for word and to stop on `NOT A PROTOTYPE QUESTION`. The seven sub-features above `proto-layout` pass; `proto-delete-ask` was checked only up to the question (the deletion on yes was not driven again).
 
@@ -25,6 +25,14 @@ Review fix, same day: `proto-mixed` added, with `.claude/agents/prototyper.md` a
 
 - `proto-mixed`: `TALLY refused_clean=3 named=3 built=0`. Runs `20261018-103304-12674`, `20261018-103306-12826`, `20261018-103308-12981` (labels `proto-mixed-<n>`), each on its own launch with `excluded=.scratch` and no `taste-question-gate` in the stream. Question word for word in the `Agent` prompt; the prototyper's only tool row was one `Grep` of `CONTEXT.md`. Each hand-back called the question mixed, refused it whole, and named the collision with the built-in Explore agent as the part to ask on its own. Porcelain `0`, log only `verify baseline`. About 0.17, 0.13 and 0.13 USD.
 
+Kit-glossary change, same day (`.scratch/kit-glossary/`): the three terms moved out of `CONTEXT.md` into the kit glossary, which `install-global.sh` installs to `~/.claude/agent-kit/glossary.md`. The runs above that record "one `Grep` of `CONTEXT.md`" predate it; the gate now names the kit glossary and says not to use the project's `CONTEXT.md`.
+
+Foreign-project runs (`$V launch --fixture foreign-bookstore`, kit installed globally, drives with `user,project,local`):
+
+- Baseline, global install as at commit `ec13657`: run `20261018-152619-19809` (label `base-foreign-taste`). Refused, but the prototyper's only tool rows were `Glob **/CONTEXT.md` and a `Read` of the bookstore `CONTEXT.md`: it looked up the kit terms in the wrong glossary.
+- `proto-taste-foreign`: `TALLY refused_clean=3 built=0`, with the global install from commit `e6f94c5`. Runs `20261018-152745-20356`, `20261018-152747-20411`, `20261018-152749-20474` (labels `proto-taste-foreign-<n>`). Question word for word in the `Agent` prompt; porcelain `0`, log only `verify baseline`, no `Write`/`Edit`/`rm` rows. No run touched the fixture's `CONTEXT.md`. Run 3 read `~/.claude/agent-kit/glossary.md` (`Bash cat`); runs 1 and 2 decided from the gate's inline test with no tool call at all. About 0.14 USD each.
+- `proto-layout-foreign`: built. Run `20261018-152751-20530` (label `proto-layout-foreign-1`). It read `~/.claude/agent-kit/glossary.md` first, then `README.md`, `CONTEXT.md` and `data/*.csv` to pick representative data, and built an HTML page with both layouts over the real catalogue under `.scratch/table-or-grouped-list-layout/prototypes/` (porcelain `2`, nothing outside `.scratch/`). `node` was denied, so the variants were not run; per Gotchas still `built`. About 0.29 USD.
+
 Earlier baseline drives `20261018-100016-81163` to `20261018-100026-82681` and verifier run `20261018-100401-86665` do not count: they ran with the answer key in the sandbox and were scored on end state only.
 
 Evidence: `~/.cache/verify-agent-system/<run-id>/evidence/`. Earlier run `20261017-180631-9022` failed `proto-taste`: the question was turned into a name-collision and rename-cost study, files were written, and `NOT A PROTOTYPE QUESTION` never came back.
@@ -40,6 +48,8 @@ Evidence: `~/.cache/verify-agent-system/<run-id>/evidence/`. Earlier run `202610
 - `proto-taste` a taste question returns `NOT A PROTOTYPE QUESTION`.
 - `proto-layout` an empirical layout question ("which layout reads better: a table or a grouped list?") is built: variants under `.scratch/` only and a `## Prototyper` report.
 - `proto-taste-coached` the taste question still returns `NOT A PROTOTYPE QUESTION`, with nothing written, when the caller coaches the prototyper to measure proxies.
+- `proto-taste-foreign` in a project that is not this repo, with the kit installed globally, the taste question returns `NOT A PROTOTYPE QUESTION` with nothing written, and no kit-term lookup goes to the project's `CONTEXT.md`.
+- `proto-layout-foreign` in the same foreign project, the layout question is built.
 - `proto-mixed` a question with a taste part and a measurable part is refused as a whole with `NOT A PROTOTYPE QUESTION`; the refusal names the measurable part, which is never built.
 
 ## How to get to it (user POV)
@@ -84,7 +94,13 @@ Two checks shared by the gate journeys, defined once:
   - **Nothing written, at the end and on the way**, with `<label>` = `proto-mixed-<n>`. The measurable part is named, never built.
   - Tally the 3 runs as `TALLY refused_clean=<n> named=<n> built=<n>`; a pass is `refused_clean=3 named=3`.
 
+- **Foreign project (`proto-taste-foreign`, `proto-layout-foreign`).** Run `./install-global.sh` from the branch being proven, then for each run `$V launch --fixture foreign-bookstore` (no `VERIFY_EXCLUDE` needed: nothing of this repo is copied) and `$V doctor`, which must show `mode: foreign` and `healthy`. Drive with the same `$A` prefix and the same prompts as **Taste refusal** (3 runs, labels `proto-taste-foreign-<n>`) and **Layout built** (label `proto-layout-foreign-<n>`), and score them with the same checks. Also:
+  - `cat $E/<label>.setting-sources.txt` prints `user,project,local`; otherwise the global install did not load.
+  - Glossary: `grep -E 'sub:prototyper$' $E/<label>.tools.tsv | grep -c 'agent-kit/glossary.md'` is the kit-glossary read. For `proto-taste-foreign`, `grep -E 'sub:prototyper$' $E/<label>.tools.tsv | grep -c CONTEXT.md` prints `0`. A taste run may make no tool call at all (the gate's inline test is enough); that passes. A layout run may read the project's `CONTEXT.md` with the README and data to pick representative data after reading the kit glossary; that passes too.
+
 ## Gotchas
+
+- Foreign runs load your whole user scope (other global agents, commands, MCP servers, `~/.claude/CLAUDE.md`). If routing goes somewhere unexpected, check `tools.tsv` for a non-kit agent before blaming the kit.
 
 - The main conversation summarizes the report rather than showing it as is. The command says "Show me its report"; treat a missing Variants or paths list in `result.md` as drift worth noting, not as a failed run.
 - With no grilling or spec in the conversation, the main agent created `.scratch/<slug>/design.md` to record the decision.
