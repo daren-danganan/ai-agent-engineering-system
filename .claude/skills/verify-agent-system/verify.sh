@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Harness for verify-agent-system. Drives this repo's agents and slash commands
-# through the real `claude` CLI inside a disposable copy of the working tree.
+# through the real `claude` CLI inside a disposable copy of the working tree,
+# or (launch --fixture) inside a copy of a fixture project that is not this repo,
+# where the globally installed kit in ~/.claude is what runs.
 # Usage is documented in SKILL.md next to this file.
 set -euo pipefail
 
@@ -13,6 +15,9 @@ BUDGET_USD="${VERIFY_BUDGET_USD:-3}"
 # User-scope commands in ~/.claude/commands override the sandbox's project
 # commands of the same name (measured 2026-10-17), so drives load project and
 # local settings only. This also keeps user MCP servers and CLAUDE.md out.
+# A foreign-project run (launch --fixture) needs user scope: the kit it tests is
+# the copy install-global.sh put in ~/.claude, so its drives default to
+# user,project,local instead (see load_mode).
 SETTING_SOURCES="${VERIFY_SETTING_SOURCES:-project,local}"
 
 die() { echo "verify: $*" >&2; exit 1; }
@@ -24,6 +29,14 @@ resolve_run() {
   RUN_DIR="$HOME_DIR/$RUN_ID"
   SANDBOX="$RUN_DIR/sandbox"
   EVIDENCE="$RUN_DIR/evidence"
+  load_mode
+}
+
+# MODE is "repo" (a copy of this repo) or "foreign" (a copy of a fixture project).
+load_mode() {
+  MODE="$(sed -n 's/^mode=//p' "$RUN_DIR/meta" 2>/dev/null || true)"
+  MODE="${MODE:-repo}"
+  if [ "$MODE" = foreign ]; then SETTING_SOURCES="${VERIFY_SETTING_SOURCES:-user,project,local}"; fi
 }
 
 need_sandbox() {
@@ -42,18 +55,40 @@ clean_env() {
 sandbox_git() { git -C "$SANDBOX" "$@"; }
 
 cmd_launch() {
+  local fixture=""
+  if [ "${1:-}" = "--fixture" ]; then
+    fixture="${2:-}"
+    [ -n "$fixture" ] && [ -d "$SKILL_DIR/fixtures/$fixture" ] || die "usage: verify.sh launch [--fixture <name under fixtures/>]"
+  fi
   RUN_ID="$(date +%Y%m%d-%H%M%S)-$$"
   RUN_DIR="$HOME_DIR/$RUN_ID"; SANDBOX="$RUN_DIR/sandbox"; EVIDENCE="$RUN_DIR/evidence"
   mkdir -p "$SANDBOX" "$EVIDENCE"
 
-  # Copy the working tree as it is now (tracked + untracked, minus ignored and
-  # minus this skill), so the drive exercises uncommitted changes too.
-  git -C "$REPO" ls-files -co --exclude-standard -z | while IFS= read -r -d '' f; do
-    case "$f" in "$SKILL_REL"/*) continue ;; esac
-    [ -f "$REPO/$f" ] || continue
-    mkdir -p "$SANDBOX/$(dirname "$f")"
-    cp -p "$REPO/$f" "$SANDBOX/$f"
-  done
+  local excl=() x
+  if [ -n "$fixture" ]; then
+    # A foreign project: only the fixture, nothing of this repo.
+    cp -R "$SKILL_DIR/fixtures/$fixture/." "$SANDBOX/"
+  else
+    # Copy the working tree as it is now (tracked + untracked, minus ignored and
+    # minus this skill), so the drive exercises uncommitted changes too.
+    # VERIFY_EXCLUDE (space-separated folders) keeps out files that would give a
+    # drive the answer, such as a spec that names the expected verdict.
+    # Globbing is off while splitting so an entry is a literal folder, and trailing
+    # slashes are stripped because ".scratch/" would otherwise match no file.
+    set -f
+    for x in ${VERIFY_EXCLUDE:-}; do
+      while [ "$x" != "${x%/}" ]; do x="${x%/}"; done
+      [ -n "$x" ] && excl+=("$x")
+    done
+    set +f
+    git -C "$REPO" ls-files -co --exclude-standard -z | while IFS= read -r -d '' f; do
+      case "$f" in "$SKILL_REL"/*) continue ;; esac
+      for x in ${excl[@]+"${excl[@]}"}; do case "$f" in "$x"/*) continue 2 ;; esac; done
+      [ -f "$REPO/$f" ] || continue
+      mkdir -p "$SANDBOX/$(dirname "$f")"
+      cp -p "$REPO/$f" "$SANDBOX/$f"
+    done
+  fi
 
   git -C "$SANDBOX" init -q -b main
   sandbox_git config user.name "verify-agent-system"
@@ -63,8 +98,10 @@ cmd_launch() {
 
   {
     echo "run=$RUN_ID"
+    if [ -n "$fixture" ]; then echo "mode=foreign"; echo "fixture=$fixture"; else echo "mode=repo"; fi
     echo "repo=$REPO"
     echo "repo_head=$(git -C "$REPO" rev-parse --short HEAD 2>/dev/null || echo none)"
+    echo "excluded=${excl[*]+${excl[*]}}"
     echo "repo_dirty_files=$(git -C "$REPO" status --porcelain | wc -l | tr -d ' ')"
     echo "claude=$(claude --version 2>&1)"
   } > "$RUN_DIR/meta"
@@ -74,6 +111,7 @@ cmd_launch() {
   echo "run:      $RUN_ID"
   echo "sandbox:  $SANDBOX"
   echo "evidence: $EVIDENCE"
+  [ -z "$fixture" ] || echo "mode:     foreign ($fixture); drives load user scope, so the kit in ~/.claude runs"
   echo "ready"
 }
 
@@ -88,11 +126,20 @@ cmd_doctor() {
   check "sandbox is not the real repo"                     '[ "$(cd "$SANDBOX" && pwd -P)" != "$(cd "$REPO" && pwd -P)" ]'
   check "claude CLI on PATH"                               'command -v claude'
   check "claude is logged in"                              'clean_env claude auth status'
-  check "agents match the repo working tree"               'diff -r "$REPO/.claude/agents" "$SANDBOX/.claude/agents"'
-  check "commands match the repo working tree"             'diff -r "$REPO/.claude/commands" "$SANDBOX/.claude/commands"'
-  check "CLAUDE.md matches the repo working tree"          'diff "$REPO/CLAUDE.md" "$SANDBOX/CLAUDE.md"'
-  check "docs/agents matches the repo working tree"        'diff -r "$REPO/docs/agents" "$SANDBOX/docs/agents"'
-  check "scripts match the repo working tree"              'diff -r "$REPO/.claude/scripts" "$SANDBOX/.claude/scripts"'
+  if [ "$MODE" = foreign ]; then
+    # Nothing of this repo is in the sandbox; the kit under test is the global install.
+    echo "mode:     foreign ($(sed -n 's/^fixture=//p' "$RUN_DIR/meta")); repo diffs skipped; drives use --setting-sources $SETTING_SOURCES"
+    check "sandbox holds no copy of the kit (.claude/agents)" '[ ! -e "$SANDBOX/.claude/agents" ]'
+    check "kit installed globally (~/.claude/agents/prototyper.md)" '[ -f "$HOME/.claude/agents/prototyper.md" ]'
+    check "kit installed globally (~/.claude/commands/prototype.md)" '[ -f "$HOME/.claude/commands/prototype.md" ]'
+    check "kit docs installed (~/.claude/agent-kit/principles.md)" '[ -f "$HOME/.claude/agent-kit/principles.md" ]'
+  else
+    check "agents match the repo working tree"               'diff -r "$REPO/.claude/agents" "$SANDBOX/.claude/agents"'
+    check "commands match the repo working tree"             'diff -r "$REPO/.claude/commands" "$SANDBOX/.claude/commands"'
+    check "CLAUDE.md matches the repo working tree"          'diff "$REPO/CLAUDE.md" "$SANDBOX/CLAUDE.md"'
+    check "docs/agents matches the repo working tree"        'diff -r "$REPO/docs/agents" "$SANDBOX/docs/agents"'
+    check "scripts match the repo working tree"              'diff -r "$REPO/.claude/scripts" "$SANDBOX/.claude/scripts"'
+  fi
   # A global install (install-global.sh) puts same-named agents and commands in
   # ~/.claude. A user command beats the project one unless drives exclude user
   # settings (they do, via --setting-sources). Agents resolve to the project.
@@ -102,7 +149,7 @@ cmd_doctor() {
       [ -e "$f" ] && [ -e "$SANDBOX/.claude/$d/$(basename "$f")" ] && dup="$dup $d/$(basename "$f")"
     done
   done
-  [ -z "$dup" ] || echo "warn  same-named files in ~/.claude:$dup (drives use --setting-sources $SETTING_SOURCES; never set VERIFY_SETTING_SOURCES to include user)"
+  [ -z "$dup" ] || [ "$MODE" = foreign ] || echo "warn  same-named files in ~/.claude:$dup (drives use --setting-sources $SETTING_SOURCES; never set VERIFY_SETTING_SOURCES to include user)"
   if [ -d "$SANDBOX/.git" ]; then
     echo "branch:   $(sandbox_git branch --show-current)"
     echo "dirty:    $(sandbox_git status --porcelain | wc -l | tr -d ' ') file(s)"
@@ -151,6 +198,7 @@ cmd_drive() {
       --max-budget-usd "$BUDGET_USD" "$@" \
       > "$base.stream.jsonl" 2> "$base.stderr.txt") || code=$?
   echo "$code" > "$base.exit.txt"
+  echo "$SETTING_SOURCES" > "$base.setting-sources.txt"
 
   # Final answer as the user would read it, plus which tools/subagents ran.
   jq -r 'select(.type=="result") | .result // empty' "$base.stream.jsonl" > "$base.result.md" 2>/dev/null || true
@@ -223,5 +271,5 @@ case "${1:-}" in
   seed-tickets) shift; cmd_seed_tickets "$@" ;;
   seed-bug)  shift; cmd_seed_bug "$@" ;;
   cleanup)   shift; cmd_cleanup "$@" ;;
-  *) die "usage: verify.sh {launch|doctor|drive|state|seed-tickets|seed-bug|cleanup}" ;;
+  *) die "usage: verify.sh {launch [--fixture <name>]|doctor|drive|state|seed-tickets|seed-bug|cleanup}" ;;
 esac

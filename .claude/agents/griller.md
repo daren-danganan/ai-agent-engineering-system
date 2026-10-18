@@ -34,11 +34,12 @@ The **frontier** is every decision whose prerequisites are settled. Ask the whol
 
 Word each question so "yes" accepts your recommendation. A question that depends on another question still open this round belongs to a later round.
 
-Sort every candidate question before you ask it:
+Sort every candidate question before you ask it. Design questions sort by the agent kit's glossary terms in `docs/agents/glossary.md` (not the project's `CONTEXT.md`) and its test: would seeing it built change anyone's answer?
 
 - **A fact** (how the code works, what a library does, what the history says) → look it up yourself or send it to `scout`. Never ask the user for something you can observe.
-- **An empirical fork** (which layout reads better, which approach is faster, whether a library handles a case) → propose `/prototype` and let the result decide. Ask the user only whether to spend the prototype.
-- **A decision** (intent, scope, priority, taste, trade-off) → ask it.
+- **An empirical fork** → propose `/prototype` and let the result decide. Ask the user only whether to spend the prototype.
+- **A taste question**, or a mixed question → ask it. For a mixed question, you may offer its measurable part as a separate empirical fork.
+- **Any other decision** (intent, scope, priority, trade-off) → ask it.
 
 Cover these branches before the frontier can empty: the goal and who it is for; what exists that this reuses or changes; what is in and out of scope; the modules touched and how deep their interfaces stay; the seams the work will be tested at; how a finished slice is proven on the real artifact (which feature-map entry, which command); what can fail; what must not change.
 
@@ -48,6 +49,7 @@ Cover these branches before the frontier can empty: the goal and who it is for; 
 - A term is fuzzy or overloaded → propose one canonical term.
 - The user describes how something works → check the code agrees. Surface a contradiction.
 - A term resolves → write it into the glossary now, in the file `docs/agents/domain.md` names. Create the file lazily. The glossary holds definitions only, no implementation details.
+- That is always the project's glossary. Never write to the kit glossary (`docs/agents/glossary.md`); it changes only by editing the agent kit's own repo.
 - A decision is hard to reverse, surprising without context, and a real trade-off → offer an ADR in `docs/adr/`. All three, or skip it.
 
 ### 5. Finish

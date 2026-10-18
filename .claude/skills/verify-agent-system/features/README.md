@@ -8,6 +8,7 @@ This directory is the maintained source for verifying the user-facing behavior o
 - `$V launch` printed `ready`, and `$V doctor` ends with `healthy`.
 - The sandbox is on branch `main` with a clean tree and one `verify baseline` commit.
 - Never drive a sandbox this verification run did not launch, and never drive the real repo.
+- A journey named `*-foreign` launches with `$V launch --fixture foreign-bookstore` instead, after `./install-global.sh` from the branch being proven. It proves the globally installed kit in a project that is not this repo; see "Foreign-project mode" in `SKILL.md`.
 
 ## Driving conventions
 
@@ -47,7 +48,7 @@ Run status as of 2026-10-17. Every proof below comes from drives with `--setting
 - [Review a diff](./review.md) covers `/review`: two parallel reviewer axes, lead-judgment buckets, read-only, empty-diff stop. Proven; the empty-diff stop is flaky (it failed once, in an earlier run that loaded the user-scope command copy).
 - [Where every feature stands](./status.md) covers `/status`: the `.scratch/` roll-up, one-feature view, next command, read-only. Proven.
 - [Ask how something works](./ask.md) covers plain how and why questions routed to `scout`. Proven.
-- [Prototype to decide](./prototype.md) covers `/prototype`: throwaway variants confined to `.scratch/`, report, delete on approval, taste refusal. Proven except `proto-taste`, which FAILS: a taste question was prototyped instead of refused.
+- [Prototype to decide](./prototype.md) covers `/prototype`: throwaway variants confined to `.scratch/`, report, delete on approval, the taste-question gate. Proven 2026-10-18 after the gate change, with the answer key hidden: `proto-taste` 3 of 3 refused clean, `proto-taste-coached` 3 of 3 refused clean (baseline 0 of 3), `proto-mixed` 3 of 3 refused whole with the collision named, `proto-layout` 3 of 3 built (baseline 0 of 3), `proto-1` passes. `proto-ran` is proven only by `proto-1`; the allowlist denies `node` in the layout runs.
 - [Diagnose a bug](./diagnose.md) covers `/diagnose` on the `seed-bug` fixture: red loop, root cause, verifier, test-then-fix commits, `NO LOOP`. Proven.
 - [Verify a claim, or map the features](./verify.md) covers `/verify` in verify and map mode. Verify mode proven; `map create` not yet run, and likely blocked by the `.claude/` write refusal.
 - [Improve the architecture](./improve-architecture.md) covers `/improve-architecture`: architect survey, HTML report, pick, grill. Proven up to the grill's restatement; the first round is not yet run.
