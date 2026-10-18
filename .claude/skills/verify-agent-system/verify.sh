@@ -48,8 +48,11 @@ cmd_launch() {
 
   # Copy the working tree as it is now (tracked + untracked, minus ignored and
   # minus this skill), so the drive exercises uncommitted changes too.
+  # VERIFY_EXCLUDE (space-separated folders) keeps out files that would give a
+  # drive the answer, such as a spec that names the expected verdict.
   git -C "$REPO" ls-files -co --exclude-standard -z | while IFS= read -r -d '' f; do
     case "$f" in "$SKILL_REL"/*) continue ;; esac
+    for x in ${VERIFY_EXCLUDE:-}; do case "$f" in "$x"/*) continue 2 ;; esac; done
     [ -f "$REPO/$f" ] || continue
     mkdir -p "$SANDBOX/$(dirname "$f")"
     cp -p "$REPO/$f" "$SANDBOX/$f"
@@ -65,6 +68,7 @@ cmd_launch() {
     echo "run=$RUN_ID"
     echo "repo=$REPO"
     echo "repo_head=$(git -C "$REPO" rev-parse --short HEAD 2>/dev/null || echo none)"
+    echo "excluded=${VERIFY_EXCLUDE:-}"
     echo "repo_dirty_files=$(git -C "$REPO" status --porcelain | wc -l | tr -d ' ')"
     echo "claude=$(claude --version 2>&1)"
   } > "$RUN_DIR/meta"

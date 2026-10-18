@@ -28,6 +28,7 @@ This copies the current working tree (tracked and untracked files, including unc
 - Later commands act on the most recent launch. To target another run, prefix the command with `VERIFY_RUN=<run-id>`.
 - Never drive the real repo. The agents write files, create branches and commit; that belongs in the sandbox.
 - The sandbox is a snapshot. After editing an agent or command in the repo, clean up and launch again.
+- `VERIFY_EXCLUDE="<folder> ..."` keeps those folders out of the sandbox and records them as `excluded=` in `meta`. Use it when a file in the repo would hand a drive its expected answer, such as a spec that names the verdict a journey checks.
 
 ## Doctor
 
