@@ -8,10 +8,10 @@
 
 **Verify with:** a static grep over the griller agent file and the principles doc (both terms present, a pointer to `CONTEXT.md`, no competing definition of taste left), plus the existing grill journey in the feature map still passing on a fresh drive.
 
-- [ ] The griller's sorting rules name "taste question" and "empirical fork" and reference the glossary
-- [ ] The principles' two sorting lines use the same terms and reference the glossary
-- [ ] No file other than `CONTEXT.md` defines what a taste question is
-- [ ] The grill journey passes on a fresh drive
+- [x] The griller's sorting rules name "taste question" and "empirical fork" and reference the glossary
+- [x] The principles' two sorting lines use the same terms and reference the glossary
+- [x] No file other than `CONTEXT.md` defines what a taste question is
+- [x] The grill journey passes on a fresh drive
 
 ## Comments
 
