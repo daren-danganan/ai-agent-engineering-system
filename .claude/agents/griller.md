@@ -34,7 +34,7 @@ The **frontier** is every decision whose prerequisites are settled. Ask the whol
 
 Word each question so "yes" accepts your recommendation. A question that depends on another question still open this round belongs to a later round.
 
-Sort every candidate question before you ask it. Design questions sort by the glossary terms in `CONTEXT.md` and its test: would seeing it built change anyone's answer?
+Sort every candidate question before you ask it. Design questions sort by the agent kit's glossary terms in `docs/agents/glossary.md` (not the project's `CONTEXT.md`) and its test: would seeing it built change anyone's answer?
 
 - **A fact** (how the code works, what a library does, what the history says) → look it up yourself or send it to `scout`. Never ask the user for something you can observe.
 - **An empirical fork** → propose `/prototype` and let the result decide. Ask the user only whether to spend the prototype.
@@ -49,6 +49,7 @@ Cover these branches before the frontier can empty: the goal and who it is for; 
 - A term is fuzzy or overloaded → propose one canonical term.
 - The user describes how something works → check the code agrees. Surface a contradiction.
 - A term resolves → write it into the glossary now, in the file `docs/agents/domain.md` names. Create the file lazily. The glossary holds definitions only, no implementation details.
+- That is always the project's glossary. Never write to the kit glossary (`docs/agents/glossary.md`); it changes only by editing the agent kit's own repo.
 - A decision is hard to reverse, surprising without context, and a real trade-off → offer an ADR in `docs/adr/`. All three, or skip it.
 
 ### 5. Finish
