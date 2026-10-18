@@ -8,6 +8,7 @@ This directory is the maintained source for verifying the user-facing behavior o
 - `$V launch` printed `ready`, and `$V doctor` ends with `healthy`.
 - The sandbox is on branch `main` with a clean tree and one `verify baseline` commit.
 - Never drive a sandbox this verification run did not launch, and never drive the real repo.
+- A journey named `*-foreign` launches with `$V launch --fixture foreign-bookstore` instead, after `./install-global.sh` from the branch being proven. It proves the globally installed kit in a project that is not this repo; see "Foreign-project mode" in `SKILL.md`.
 
 ## Driving conventions
 

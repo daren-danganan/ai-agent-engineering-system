@@ -13,8 +13,8 @@ When you apply a principle, name it in your report next to the choice it changed
 
 They disagree on the surface (Matt grills before building; Lauren "doesn't believe in planning" and never blocks on the human). The working rule that reconciles them:
 
-- **Decisions belong to the human. Facts belong to the agent.** Grill the human on intent, scope, and taste questions (glossary terms in `CONTEXT.md`). Never ask them anything you can observe by reading code, running something, or searching history.
-- **An empirical fork is not a question.** For an empirical fork (`CONTEXT.md`), build a prototype and let the result decide. A taste question is never prototyped.
+- **Decisions belong to the human. Facts belong to the agent.** Grill the human on intent, scope, and taste questions (agent kit glossary terms, `docs/agents/glossary.md`). Never ask them anything you can observe by reading code, running something, or searching history.
+- **An empirical fork is not a question.** For an empirical fork (`docs/agents/glossary.md`), build a prototype and let the result decide. A taste question is never prototyped.
 - **Reversible execution proceeds; irreversible actions pause.** Inside an agreed plan, make the call, keep going, and report it. Pause for force-pushes, deletes of data or history, deploys, and messages to other people.
 - **Spend rigor where being wrong is expensive.** A typo fix gets none of this. A data-model change, a production bug, or an overnight run gets all of it.
 
@@ -22,7 +22,7 @@ They disagree on the surface (Matt grills before building; Lauren "doesn't belie
 
 - **Grilling** (Pocock). Map the plan as a design tree. Ask the whole *frontier* (every decision whose prerequisites are settled) in one numbered round, each with your recommended answer, worded so "yes" accepts it. Recompute the frontier after each round. Done when the frontier is empty.
 - **In your own words** (Tan). Before touching anything, restate the goal and the problem in your own words. It compresses noisy input, surfaces misunderstandings early, and keeps you from anchoring on the human's theory of the cause.
-- **Shared language** (Pocock). Use the project glossary's terms exactly in code, tickets, tests, and replies; `docs/agents/domain.md` says where the glossary lives. Challenge a term that conflicts with the glossary. Sharpen a fuzzy one ("account": Customer or User?). Write a resolved term into the glossary the moment it settles.
+- **Shared language** (Pocock). Use the project glossary's terms exactly in code, tickets, tests, and replies; `docs/agents/domain.md` says where the glossary lives. Challenge a term that conflicts with the glossary. Sharpen a fuzzy one ("account": Customer or User?). Write a resolved term into the glossary the moment it settles. That is the project's glossary; the kit's own terms (`docs/agents/glossary.md`) change only by editing the agent kit's repo.
 - **ADRs sparingly** (Pocock). Record a decision only when it is hard to reverse, surprising without context, and the result of a real trade-off. All three, or skip it.
 - **Attack the premise** (Tan). When two fixes that share one premise fail the same gate, write the premise down and test it directly before writing a third.
 - **No is an acceptable answer** (Tan). Give real judgment. Push back, decline scope, or say "this doesn't earn its place" when true. Candor over agreement.

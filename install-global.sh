@@ -31,6 +31,7 @@ rewrite() {
       -e 's#docs/agents/flows\.md#~/.claude/agent-kit/flows.md#g' \
       -e 's#docs/agents/triage-labels\.md#~/.claude/agent-kit/triage-labels.md#g' \
       -e 's#`docs/agents/domain\.md`#`docs/agents/domain.md` (or `~/.claude/agent-kit/domain.md` when the project has none)#g' \
+      -e 's#docs/agents/glossary\.md#~/.claude/agent-kit/glossary.md#g' \
       -e 's#`\.claude/agents/griller\.md`#`~/.claude/agents/griller.md`#g' \
       -e 's#`\.claude/commands/review\.md`#`~/.claude/commands/review.md`#g' \
       -e 's#\.claude/scripts/status\.sh#~/.claude/agent-kit/status.sh#g' \
@@ -59,7 +60,7 @@ fi
 echo "Installing agent kit into $DEST"
 for f in "$KIT"/.claude/agents/*.md;   do install_file "$f" "$DEST/agents/$(basename "$f")"; done
 for f in "$KIT"/.claude/commands/*.md; do install_file "$f" "$DEST/commands/$(basename "$f")"; done
-for f in principles flows triage-labels domain; do install_file "$KIT/docs/agents/$f.md" "$DEST/agent-kit/$f.md"; done
+for f in principles flows triage-labels domain glossary; do install_file "$KIT/docs/agents/$f.md" "$DEST/agent-kit/$f.md"; done
 install_file "$KIT/.claude/scripts/status.sh" "$DEST/agent-kit/status.sh" && chmod +x "$DEST/agent-kit/status.sh"
 
 [ -d "$BACKUP" ] && echo "Backed up replaced files to $BACKUP"
